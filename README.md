@@ -1,9 +1,9 @@
 # andbot_base
 
 ## MCU firmware
-    * mega_base.ino is for mega board.
-    * vnh5019_left.ino is for the motor controller board which has "L" label.  
-    * vnh5019_right.ino is for the motor controller board which has "R" label.
+     mega_base.ino is for mega board.
+     vnh5019_left.ino is for the motor controller board which has "L" label.  
+     vnh5019_right.ino is for the motor controller board which has "R" label.
 
 ## ROS tutorials
 
