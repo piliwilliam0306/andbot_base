@@ -12,7 +12,7 @@
 ## Copy Andbot packages to catkin workspace
 
     git clone https://github.com/piliwilliam0306/andbot_base.git
-    cp src/ ~/catkin_ws/
+    cp -r src/ ~/catkin_ws/
   
 ## Build packages
     cd ~/catkin_ws
