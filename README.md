@@ -11,16 +11,16 @@
 
 ## Copy Andbot packages to catkin workspace
 
-   $ git clone https://github.com/piliwilliam0306/andbot_base.git
-   $ cp -r src/ ~/catkin_ws/
+    $ git clone https://github.com/piliwilliam0306/andbot_base.git
+    $ cp -r src/ ~/catkin_ws/
   
 ## Build packages
-   $ cd ~/catkin_ws
-   $ catkin_make
+    $ cd ~/catkin_ws
+    $ catkin_make
 
 ## Launch Andbot nodes.
 
-   $ roslaunch andbot andbot.launch
+    $ roslaunch andbot andbot.launch
 
 ## Everything launched successfully
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/odom_received.png)
@@ -29,7 +29,7 @@
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/rviz.png)
 
 ## Simple Teleop operation
-  $ sudo apt-get install ros-indigo-turtlebot-teleop
+    $ sudo apt-get install ros-indigo-turtlebot-teleop
 
 ## modify turbotbot_teleop cmd_vel topic name
   * $ roscd turtlebot_teleop/launch
