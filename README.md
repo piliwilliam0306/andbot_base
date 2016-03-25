@@ -34,6 +34,6 @@
 ## modify turbotbot_teleop cmd_vel topic name
   * $ roscd turtlebot_teleop/launch
   * $ vi keyboard_teleop.launch
-  * add the following line
-  * "<remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/>"
+  * modify the following line
+  * "remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/"
   * $ roslaunch turtlebot_teleop keyboard_teleop.launch
