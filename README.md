@@ -21,3 +21,9 @@
 ## Launch Andbot nodes.
 
     roslaunch andbot andbot.launch
+
+## Everything launched successfully
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/odom_received.png)
+
+## View in Rviz
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/rviz.png)
