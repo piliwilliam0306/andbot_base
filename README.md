@@ -35,5 +35,5 @@
   * $ roscd turtlebot_teleop/launch
   * $ vi keyboard_teleop.launch
   * add the following line
-  * <remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/>
+  * "<remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/>"
   * $ roslaunch turtlebot_teleop keyboard_teleop.launch
