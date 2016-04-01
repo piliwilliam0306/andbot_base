@@ -137,14 +137,8 @@ target_link_libraries(mybot_odometry ${catkin_LIBRARIES})
 add_executable(mybot_base_controller src/mybot_base_controller.cpp)
 target_link_libraries(mybot_base_controller ${catkin_LIBRARIES})
 
-add_executable(mybot_loop src/mybot_loop.cpp)
-target_link_libraries(mybot_loop ${catkin_LIBRARIES})
-
 add_executable(mybot_xv11_angular_bound_filter src/mybot_xv11_angular_bound_filter.cpp)
 target_link_libraries(mybot_xv11_angular_bound_filter ${catkin_LIBRARIES})
-
-add_executable(mybot_laser_obstacle_clearing_filter src/mybot_laser_obstacle_clearing_filter.cpp)
-target_link_libraries(mybot_laser_obstacle_clearing_filter ${catkin_LIBRARIES})
 
 add_executable(mybot_stop_when_goal_reached src/mybot_stop_when_goal_reached.cpp)
 target_link_libraries(mybot_stop_when_goal_reached ${catkin_LIBRARIES})
