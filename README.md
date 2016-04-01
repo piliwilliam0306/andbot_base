@@ -4,7 +4,7 @@
      mega_base.ino is for mega board.
      vnh5019_left.ino is for the motor controller board which has "L" label.  
      vnh5019_right.ino is for the motor controller board which has "R" label.
-     Please select Arduino Pro Mini when uploading codes for the vnh5019 boards.
+     Please select Arduino Pro Mini when uploading codes for the motor controller boards.
 
 ## ROS tutorials
 
