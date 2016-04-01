@@ -37,3 +37,7 @@
   * modify the following line
   * "remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/"
   * $ roslaunch turtlebot_teleop keyboard_teleop.launch
+
+## Schematic
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/VNH5019.png)
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/ATMEGA328.png)
