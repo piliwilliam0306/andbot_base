@@ -17,7 +17,7 @@
           #define MICROSECONDS_PER_TIMER0_OVERFLOW (clockCyclesToMicroseconds(8 * 256))
 
 ## Note
-     This wiring.c is only for motor control board, make sure to use original wiring.c when programming Mega 2560
+     This wiring.c is only for motor control board, make sure to use original wiring.c when programming Mega 2560.
      The Arduino uses Timer 0 internally for the millis() and delay() functions, so be warned that changing the frequency of this timer will cause those functions to be erroneous.
 
 ## Schematic
