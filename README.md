@@ -16,6 +16,9 @@
      To:
           #define MICROSECONDS_PER_TIMER0_OVERFLOW (clockCyclesToMicroseconds(8 * 256))
 
+## Note
+     The Arduino uses Timer 0 internally for the millis() and delay() functions, so be warned that changing the frequency of this timer will cause those functions to be erroneous.
+
 ## Schematic
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/VNH5019.png)
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/ATMEGA328.png)
