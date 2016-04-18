@@ -62,3 +62,4 @@ https://arduino-info.wikispaces.com/Arduino-PWM-Frequency
 
 http://playground.arduino.cc/Main/TimerPWMCheatsheet
 
+http://www.arduino.cc/en/Tutorial/SecretsOfArduinoPWM
