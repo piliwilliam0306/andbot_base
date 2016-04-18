@@ -58,6 +58,9 @@ double calculated_pidTerm;
 double constrained_pidterm;
 
 void setup() { 
+ //Set PWM frequency for D5 & D6
+ // set timer 0 divisor to     8 for PWM frequency of  7812.50 Hz
+ TCCR0B = TCCR0B & B11111000 | B00000010;
  pinMode(encoder0PinA, INPUT); 
  digitalWrite(encoder0PinA, HIGH);       // turn on pullup resistor
  pinMode(encoder0PinB, INPUT); 
@@ -141,7 +144,7 @@ double updatePid(double targetValue,double currentValue)
 
   sum_error = sum_error + error * dT;
   // Added by KKuei to bound sum_error range
-  sum_error = constrain(sum_error, -1200, 1200);
+  sum_error = constrain(sum_error, -2000, 2000);
   
   d_error = (error - last_error) / dT;
   pidTerm = Kp * error + Ki * sum_error + Kd * d_error;   

@@ -142,7 +142,7 @@ double updatePid(double targetValue,double currentValue)
 
   sum_error = sum_error + error * dT;
   // Added by KKuei to bound sum_error range
-  sum_error = constrain(sum_error, -1200, 1200);
+  sum_error = constrain(sum_error, -2000, 2000);
   
   d_error = (error - last_error) / dT;
   pidTerm = Kp * error + Ki * sum_error + Kd * d_error;   
@@ -157,7 +157,6 @@ double updatePid(double targetValue,double currentValue)
 
 
 void doEncoder() {
-//   Encoderpos++;
   pinAState = digitalRead(2);
   pinBState = digitalRead(3);
 
