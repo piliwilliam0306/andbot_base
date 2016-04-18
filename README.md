@@ -19,6 +19,7 @@
 ## Note
      This wiring.c is only for motor control board, make sure to use original wiring.c when programming Mega 2560.
      The Arduino uses Timer 0 internally for the millis() and delay() functions, so be warned that changing the frequency of this timer will cause those functions to be erroneous.
+     The frequency should, if possible, avoid the audio spectrum: below 20 Hz (not a good idea except for really massive motors) or above 20 KHz, so that the magnetostrictive vibration in windings or sympathetic vibration in the mechanical rotor, will not be heard by humans.
 
 ## Schematic
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/VNH5019.png)
