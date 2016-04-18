@@ -4,6 +4,11 @@
      mega_base.ino is for mega board.
      vnh5019_left.ino is for the motor controller board which has "L" label.  
      vnh5019_right.ino is for the motor controller board which has "R" label.
+     Please select Arduino Pro Mini when uploading codes for the motor controller boards.
+
+## Schematic
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/VNH5019.png)
+![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/ATMEGA328.png)
 
 ## ROS tutorials
 
@@ -37,7 +42,5 @@
   * modify the following line
   * "remap from ="turtlebot_teleop_keyboard/cmd_vel" to="andbot/cmd_vel"/"
   * $ roslaunch turtlebot_teleop keyboard_teleop.launch
+ 
 
-## Schematic
-![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/VNH5019.png)
-![](https://github.com/piliwilliam0306/andbot_base/blob/master/schematic/ATMEGA328.png)
