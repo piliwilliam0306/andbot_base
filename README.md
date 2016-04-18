@@ -8,7 +8,7 @@
 
 ## Modify Arduino PWM Frequency
      Add this line in setup()
-     "TCCR1B = TCCR1B & B11111000 | B00000010;"    // set timer 1 divisor to     8 for PWM frequency of  3921.16 Hz
+          TCCR0B = TCCR0B & B11111000 | B00000010; // set timer 0 divisor to 8 for PWM frequency of 7812.50 Hz
      Overwrite wiring.c in ~/arduino-1.6.5/hardware/arduino/avr/cores/arduino
      Modify
           #define MICROSECONDS_PER_TIMER0_OVERFLOW (clockCyclesToMicroseconds(64 * 256))
