@@ -18,6 +18,7 @@ char commandArray[3];
 byte sT = 0;  //send start byte
 byte sH = 0;  //send high byte
 byte sL = 0;  //send low byte
+byte sCS = 0;  //send current sense byte
 byte sP = 0;  //send stop byte
 
 byte rT = 0;  //receive start byte
@@ -61,6 +62,7 @@ double constrained_pidterm;
 //current sense
 int analogPin = A0;
 int current = 0;
+int current_send = 0;
 
 void setup() 
 { 
@@ -101,10 +103,7 @@ void loop()
         
         if (PWM_val <= 0)   { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, LOW);  digitalWrite(InB, HIGH); }
         if (PWM_val > 0)    { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, HIGH);   digitalWrite(InB, LOW);}
-          
-	//current sense
-        // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
-        current = analogRead(analogPin) * 34;  
+  
         //printMotorInfo();
      }
 }
@@ -133,11 +132,17 @@ void readCmd_wheel_angularVel()
 void sendFeedback_wheel_angularVel()
 {
   actual_send = int(omega_actual/0.00031434064); //convert rad/s to 16 bit integer to send
+  //current sense
+  // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
+  current = analogRead(analogPin) * 34;
+  current_send = current/136; //convert to 8 bit 1024*34/256=136
   char sT='{'; //send start byte
   byte sH = highByte(actual_send); //send high byte
   byte sL = lowByte(actual_send);  //send low byte
   char sP='}'; //send stop byte
-  Serial.write(sT); Serial.write(sH); Serial.write(sL); Serial.write(sP);
+  Serial.write(sT); Serial.write(sH); Serial.write(sL); 
+  //Serial.write(sCS);//prepared for sending current drawing to mega 
+  Serial.write(sP);
 }
 
 void getMotorData()  
