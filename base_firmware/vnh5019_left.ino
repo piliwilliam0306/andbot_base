@@ -5,6 +5,7 @@
 #define motorIn1 6
 #define InA 5
 #define InB 4
+#define EN 7
 
 #define LOOPTIME 40
 
@@ -57,6 +58,10 @@ double sum_error, d_error=0;
 double calculated_pidTerm;
 double constrained_pidterm;
 
+//current sense
+int analogPin = A0;
+int current = 0;
+
 void setup() { 
  //Set PWM frequency for D5 & D6
  // set timer 0 divisor to     8 for PWM frequency of  7812.50 Hz
@@ -70,6 +75,7 @@ void setup() {
  attachInterrupt(1, doEncoder, CHANGE);
  pinMode(InA, OUTPUT); 
  pinMode(InB, OUTPUT); 
+ pinMode(EN, OUTPUT);
  Serial.begin (57600);
 } 
 
@@ -88,11 +94,18 @@ void loop()
         
         PWM_val = (updatePid(omega_target, omega_actual));                       // compute PWM value from rad/s 
 
-        if (omega_target == 0) PWM_val = 0; 
+        //if (omega_target == 0) PWM_val = 0; 
+
+	if (omega_target == 0)  { PWM_val = 0;  digitalWrite(EN, LOW);  }
+        else                    digitalWrite(EN, HIGH);
         
         if (PWM_val <= 0)   { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, LOW);  digitalWrite(InB, HIGH); }
         if (PWM_val > 0)    { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, HIGH);   digitalWrite(InB, LOW);}
             
+	//current sense
+        // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
+        current = analogRead(analogPin) * 34;
+
         //printMotorInfo();
      }
 }
@@ -199,9 +212,11 @@ void printMotorInfo()
    Serial.print(" actual:");                  Serial.print(omega_actual);
    //Serial.print(" sum_error:");              Serial.print(sum_error);
    //Serial.print("  error:");                  Serial.print(error);
-   Serial.print("  samples:");                  Serial.print(cc);
+   //Serial.print("  samples:");                  Serial.print(cc);
    Serial.print("  dT:");                  Serial.print(dT);
    Serial.print("  sum_err:");                  Serial.print(sum_error);
+   Serial.print("  Current:");                  Serial.print(current);
+   Serial.print("  PWM_val:");                  Serial.print(PWM_val);	
    Serial.println();
 }
 
