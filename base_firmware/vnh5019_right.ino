@@ -139,6 +139,7 @@ void sendFeedback_wheel_angularVel()
   char sT='{'; //send start byte
   byte sH = highByte(actual_send); //send high byte
   byte sL = lowByte(actual_send);  //send low byte
+  byte sCS = current_send;  //send current value
   char sP='}'; //send stop byte
   Serial.write(sT); Serial.write(sH); Serial.write(sL); 
   //Serial.write(sCS);//prepared for sending current drawing to mega 
