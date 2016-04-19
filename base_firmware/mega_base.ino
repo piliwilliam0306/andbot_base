@@ -137,7 +137,7 @@ void readFeadback_angularVel_R()
        {
         right_actual_receive = (rH_R << 8) + rL_R; 
         omega_right_actual = double (right_actual_receive * 0.00031434064); //convert received 16 bit integer to actual speed
-	Current_Draw_L = rCS_R * 136;	
+	Current_Draw_R = rCS_R * 136;	
        }  
      }
   }   
