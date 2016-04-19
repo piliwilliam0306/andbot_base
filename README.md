@@ -5,6 +5,7 @@
      vnh5019_left.ino is for the motor controller board which has "L" label.  
      vnh5019_right.ino is for the motor controller board which has "R" label.
      Please select Arduino Pro Mini when uploading codes for the motor controller boards.
+     Current sense in A0: 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
 
 ## Modify Arduino PWM Frequency
      Add this line in setup()
