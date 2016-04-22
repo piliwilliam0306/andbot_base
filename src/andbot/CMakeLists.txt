@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   tf
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -39,18 +40,18 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 ##     find_package(catkin REQUIRED COMPONENTS ...)
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
+##     catkin_package(CATKIN_DEPENDS message_runtime)
 ##   * uncomment the add_*_files sections below as needed
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   Sonar.msg
+   Bump.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -67,10 +68,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES Andbot
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
@@ -137,8 +138,14 @@ target_link_libraries(mybot_odometry ${catkin_LIBRARIES})
 add_executable(mybot_base_controller src/mybot_base_controller.cpp)
 target_link_libraries(mybot_base_controller ${catkin_LIBRARIES})
 
+add_executable(mybot_loop src/mybot_loop.cpp)
+target_link_libraries(mybot_loop ${catkin_LIBRARIES})
+
 add_executable(mybot_xv11_angular_bound_filter src/mybot_xv11_angular_bound_filter.cpp)
 target_link_libraries(mybot_xv11_angular_bound_filter ${catkin_LIBRARIES})
+
+add_executable(mybot_laser_obstacle_clearing_filter src/mybot_laser_obstacle_clearing_filter.cpp)
+target_link_libraries(mybot_laser_obstacle_clearing_filter ${catkin_LIBRARIES})
 
 add_executable(mybot_stop_when_goal_reached src/mybot_stop_when_goal_reached.cpp)
 target_link_libraries(mybot_stop_when_goal_reached ${catkin_LIBRARIES})
