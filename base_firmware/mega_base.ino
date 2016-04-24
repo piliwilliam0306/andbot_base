@@ -89,10 +89,10 @@ void loop()
           vel_msg.y=omega_right_actual;
           p.publish(&vel_msg);
 
-          nh.spinOnce();
+          //nh.spinOnce();
           //printMotorInfo();
-       }     
-      
+       }           
+  nh.spinOnce();
 }
 
 void readFeadback_angularVel_L()
