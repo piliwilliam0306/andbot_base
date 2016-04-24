@@ -12,7 +12,6 @@ byte sP_L = 0;  //send stop byte
 byte rT_L = 0;  //receive start byte
 byte rH_L = 0;  //receive high byte
 byte rL_L = 0;  //receive low byte
-byte rCS_L = 0;  //receive current byte
 byte rP_L = 0;  //receive stop byte
 
 char commandArray_R[3];
@@ -24,7 +23,6 @@ byte sP_R = 0;  //send stop byte
 byte rT_R = 0;  //receive start byte
 byte rH_R = 0;  //receive high byte
 byte rL_R = 0;  //receive low byte
-byte rCS_R = 0;  //receive current byte
 byte rP_R = 0;  //receive stop byte
 
 #define LOOPTIME        100
@@ -39,9 +37,6 @@ int left_actual_receive = 0;
 int left_target_send = 0;
 int right_actual_receive = 0;
 int right_target_send = 0;
-
-int Current_Draw_L = 0;
-int Current_Draw_R = 0;
 
 ros::NodeHandle nh;
 
@@ -92,29 +87,26 @@ void loop()
 
           //nh.spinOnce();
           //printMotorInfo();
-       }           
-  nh.spinOnce();
+       }     
+  nh.spinOnce();    
 }
 
 void readFeadback_angularVel_L()
 {
-  //if (Serial2.available() >= 4) 
-  if (Serial2.available() >= 5)   
+  if (Serial2.available() >= 4) 
   {
     char rT_L = (char)Serial2.read(); //read actual speed from Uno
     if(rT_L == '{')
       {
-        char commandArray_L[4];
-        Serial2.readBytes(commandArray_L,4);
+        char commandArray_L[3];
+        Serial2.readBytes(commandArray_L,3);
         byte rH_L = commandArray_L[0];
         byte rL_L = commandArray_L[1];
-	byte rCS_L = commandArray_L[2];
-        char rP_L = commandArray_L[3];
+        char rP_L = commandArray_L[2];
         if(rP_L == '}')         
           {
             left_actual_receive = (rH_L << 8) + rL_L; 
             omega_left_actual = double (left_actual_receive * 0.00031434064); //convert received 16 bit integer to actual speed
-	    Current_Draw_L = rCS_L * 136;	
           }
       }   
   }
@@ -122,23 +114,20 @@ void readFeadback_angularVel_L()
 
 void readFeadback_angularVel_R()
 {
-  //if (Serial1.available() >= 4) 
-  if (Serial1.available() >= 5)   
+  if (Serial1.available() >= 4) 
   {  
     char rT_R = (char)Serial1.read(); //read actual speed from Uno
     if(rT_R == '{')
      {
-       char commandArray_R[4];
-       Serial1.readBytes(commandArray_R,4);
+       char commandArray_R[3];
+       Serial1.readBytes(commandArray_R,3);
        byte rH_R = commandArray_R[0];
        byte rL_R = commandArray_R[1];
-       byte rCS_R = commandArray_L[2];
-       char rP_R = commandArray_R[3];
+       char rP_R = commandArray_R[2];
        if(rP_R == '}')         
        {
         right_actual_receive = (rH_R << 8) + rL_R; 
         omega_right_actual = double (right_actual_receive * 0.00031434064); //convert received 16 bit integer to actual speed
-	Current_Draw_R = rCS_R * 136;	
        }  
      }
   }   
