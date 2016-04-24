@@ -60,6 +60,7 @@ ros::Subscriber<geometry_msgs::Vector3> s("cmd_wheel_angularVel",messageCb);
 
 void setup() 
 {
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.subscribe(s);
   nh.advertise(p);
