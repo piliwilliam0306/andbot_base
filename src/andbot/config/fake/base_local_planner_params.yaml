@@ -1,4 +1,5 @@
-controller_frequency: 3.0
+
+conntroller_frequency: 3.0
 recovery_behavior_enabled: true
 clearing_rotation_allowed: true
 
@@ -38,3 +39,9 @@ TrajectoryPlannerROS:
    sim_time: 2.0
    sim_granularity: 0.1
    angular_sim_granularity: 0.1
+#   vx_samples: 8
+#   vy_samples: 0  # zero for a differential drive robot
+#   vtheta_samples: 20
+#   dwa: true
+#   simple_attractor: false
+

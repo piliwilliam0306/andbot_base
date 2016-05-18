@@ -1,20 +1,21 @@
-//
+
 #define encoder0PinA  2
 #define encoder0PinB  3
 
 #define motorIn1 6
-#define InA 4
-#define InB 5
+#define InA 5
+#define InB 4
 #define EN 7
 
 #define LOOPTIME 40
+#define FeedbackTime 100
+#define CurrentLimit 8000 //for metal0
 
 int pinAState = 0;
 int pinAStateOld = 0;
 int pinBState = 0;
 int pinBStateOld = 0;
 
-char commandArray[3];
 byte sT = 0;  //send start byte
 byte sH = 0;  //send high byte
 byte sL = 0;  //send low byte
@@ -31,26 +32,20 @@ volatile long unknownvalue = 0;
 
 volatile int lastEncoded = 0;
 unsigned long lastMilli = 0;                    // loop timing 
+unsigned long lastSend = 0;                    // send timing 
 long dT = 0;
-unsigned long cc = 0;
 
 double omega_target = 0.0;
 double omega_actual = 0;
 
 int PWM_val = 0;                                // (25% = 64; 50% = 127; 75% = 191; 100% = 255)
-int CPR = 28;                                   // encoder count per revolution
-int gear_ratio = 65.5; 
+double CPR = 28;                                   // encoder count per revolution
+double gear_ratio = 65.5; 
 int actual_send = 0;
 int target_receive = 0;
 
-//float Kp = 1.0;
-//float Ki = 0.03;
-//float Ki = 0.005;
-
 float Kp = 0.9;
-//float Ki = 0.03;
 float Ki = 0.005;
-
 float Kd = 0;
 double error;
 double pidTerm = 0;                                                            // PID correction
@@ -61,8 +56,12 @@ double constrained_pidterm;
 
 //current sense
 int analogPin = A0;
-int current = 0;
+unsigned int current = 0;
 int current_send = 0;
+
+//Motor Driver mode
+int driver_mode = 0;
+int driver_status = 0;
 
 void setup() 
 { 
@@ -79,13 +78,14 @@ void setup()
  pinMode(InA, OUTPUT); 
  pinMode(InB, OUTPUT); 
  pinMode(EN, OUTPUT);
+ digitalWrite(EN, LOW);
  Serial.begin (57600);
 } 
 
 void loop() 
 {       
   readCmd_wheel_angularVel();
-
+  CurrentMonitor();
   if((millis()-lastMilli) >= LOOPTIME)   
      {                                    // enter tmed loop
         dT = millis()-lastMilli;
@@ -93,19 +93,19 @@ void loop()
         
         getMotorData();                                                           // calculate speed
 
-        sendFeedback_wheel_angularVel(); //send actually speed to mega
-        
         PWM_val = (updatePid(omega_target, omega_actual));                       // compute PWM value from rad/s 
-
-        //if (omega_target == 0) PWM_val = 0; 
-	if (omega_target == 0)  { PWM_val = 0;  digitalWrite(EN, LOW);  }
-        else                    digitalWrite(EN, HIGH);
+        
+        if ((omega_target == 0) || (driver_mode == 0) )  { PWM_val = 0;  sum_error = 0; digitalWrite(EN, HIGH); }
         
         if (PWM_val <= 0)   { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, LOW);  digitalWrite(InB, HIGH); }
         if (PWM_val > 0)    { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, HIGH);   digitalWrite(InB, LOW);}
-  
-        //printMotorInfo();
      }
+     
+  if((millis()-lastSend) >= FeedbackTime)   
+     {                                    // enter tmed loop
+        lastSend = millis();
+        sendFeedback_wheel_angularVel(); //send actually speed to mega
+     }   
 }
 
 void readCmd_wheel_angularVel()
@@ -120,43 +120,59 @@ void readCmd_wheel_angularVel()
               byte rH=commandArray[0];
               byte rL=commandArray[1];
               char rP=commandArray[2];
-              if(rP=='}')         
+              if(rP=='}') //B01111101 motor driver on         
                 {
                   target_receive = (rH<<8)+rL; 
                   omega_target = double (target_receive*0.00031434064);  //convert received 16 bit integer to actual speed
+                  driver_mode = 1;
+                  if (driver_mode ==1)  driver_status = 1;
+                  else                  driver_status = 0;
                 }
+              if(rP=='|') //B01111100 motor driver off         
+                {
+                  target_receive = (rH<<8)+rL; 
+                  omega_target = double (target_receive*0.00031434064);  //convert received 16 bit integer to actual speed
+                  driver_mode = 0;
+                  if (driver_mode ==1)  driver_status = 1;
+                  else                  driver_status = 0;
+                }  
             }
   }         
 }
 
 void sendFeedback_wheel_angularVel()
 {
+  //getMotorData();
   actual_send = int(omega_actual/0.00031434064); //convert rad/s to 16 bit integer to send
-  //current sense
-  // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
-  current = analogRead(analogPin) * 34;
-  current_send = current/136; //convert to 8 bit 1024*34/256=136
+  //max current is 20400mA 20400/255 = 80
+  current_send = current/80; 
   char sT='{'; //send start byte
   byte sH = highByte(actual_send); //send high byte
   byte sL = lowByte(actual_send);  //send low byte
   byte sCS = current_send;  //send current value
-  char sP='}'; //send stop byte
+  if (driver_status == 1)  sP = '}'; //send stop byte motor on
+  if (driver_status == 0)  sP = '|'; //send stop byte motor off
   Serial.write(sT); Serial.write(sH); Serial.write(sL); 
-  //Serial.write(sCS);//prepared for sending current drawing to mega 
+  Serial.write(sCS);//prepared for sending current drawing to mega 
   Serial.write(sP);
 }
 
 void getMotorData()  
 {                               
   static long EncoderposPre = 0;       
-  //converting ticks/s to rad/s
-  omega_actual = ((Encoderpos - EncoderposPre)*(1000/dT))*2*PI/(CPR*gear_ratio);  //ticks/s to rad/s
+  omega_actual = -(((Encoderpos - EncoderposPre)*(1000/dT))*2*PI/(CPR*gear_ratio));  //ticks/s to rad/s
   EncoderposPre = Encoderpos;                 
 }
 
+void CurrentMonitor()
+{
+    // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
+    current = analogRead(analogPin) * 34;  
+    if (current > CurrentLimit)  digitalWrite(EN, LOW);
+}
+
 double updatePid(double targetValue,double currentValue)   
-{            
-  
+{              
   static double last_error=0;                            
   error = targetValue - currentValue; 
 
@@ -213,9 +229,6 @@ void printMotorInfo()
 {                                                                      
    Serial.print(" target:");                  Serial.print(omega_target);
    Serial.print(" actual:");                  Serial.print(omega_actual);
-   //Serial.print(" sum_error:");              Serial.print(sum_error);
-   //Serial.print("  error:");                  Serial.print(error);
-   Serial.print("  samples:");                  Serial.print(cc);
    Serial.print("  dT:");                  Serial.print(dT);
    Serial.print("  sum_err:");                  Serial.print(sum_error);
    Serial.print("  Current:");                  Serial.print(current);
