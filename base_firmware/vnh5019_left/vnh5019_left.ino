@@ -9,7 +9,7 @@
 
 #define LOOPTIME 40
 #define FeedbackTime 100
-#define CurrentLimit 8000 //for metal0
+#define CurrentLimit 8500 //for metal0
 
 int pinAState = 0;
 int pinAStateOld = 0;

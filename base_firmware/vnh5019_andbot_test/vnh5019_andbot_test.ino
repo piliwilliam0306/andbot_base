@@ -80,12 +80,15 @@ void setup()
  pinMode(InA, OUTPUT); 
  pinMode(InB, OUTPUT); 
  pinMode(EN, OUTPUT);
- digitalWrite(EN, LOW);
+ digitalWrite(EN, HIGH);
  Serial.begin (57600);
 } 
 
 void loop() 
-{       
+{ 
+  if (Serial.available() >= 4) {
+    omega_target = Serial.parseFloat();
+   }      
   CurrentMonitor();
   if((millis()-lastMilli) >= LOOPTIME)  
      {                                    // enter tmed loop
@@ -118,7 +121,7 @@ void CurrentMonitor()
 {
     // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
     current = analogRead(analogPin) * 34;  
-    if (current > CurrentLimit)  digitalWrite(EN, LOW);
+    //if (current > CurrentLimit)  digitalWrite(EN, LOW);
 }
 
 double updatePid(double targetValue,double currentValue)   
