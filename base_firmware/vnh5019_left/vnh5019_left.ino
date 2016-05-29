@@ -78,14 +78,15 @@ void setup()
  pinMode(InA, OUTPUT); 
  pinMode(InB, OUTPUT); 
  pinMode(EN, OUTPUT);
- digitalWrite(EN, LOW);
+ //digitalWrite(EN, LOW);
+ digitalWrite(EN, HIGH);
  Serial.begin (57600);
 } 
 
 void loop() 
 {       
   readCmd_wheel_angularVel();
-  CurrentMonitor();
+  //CurrentMonitor();
   if((millis()-lastMilli) >= LOOPTIME)   
      {                                    // enter tmed loop
         dT = millis()-lastMilli;
@@ -95,7 +96,7 @@ void loop()
 
         PWM_val = (updatePid(omega_target, omega_actual));                       // compute PWM value from rad/s 
         
-        if ((omega_target == 0) || (driver_mode == 0) )  { PWM_val = 0;  sum_error = 0; digitalWrite(EN, HIGH); }
+        if (omega_target == 0)  { PWM_val = 0;  sum_error = 0; }
         
         if (PWM_val <= 0)   { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, LOW);  digitalWrite(InB, HIGH); }
         if (PWM_val > 0)    { analogWrite(motorIn1,abs(PWM_val));  digitalWrite(InA, HIGH);   digitalWrite(InB, LOW);}
@@ -120,22 +121,11 @@ void readCmd_wheel_angularVel()
               byte rH=commandArray[0];
               byte rL=commandArray[1];
               char rP=commandArray[2];
-              if(rP=='}') //B01111101 motor driver on         
+              if(rP=='}')        
                 {
                   target_receive = (rH<<8)+rL; 
                   omega_target = double (target_receive*0.00031434064);  //convert received 16 bit integer to actual speed
-                  driver_mode = 1;
-                  if (driver_mode ==1)  driver_status = 1;
-                  else                  driver_status = 0;
-                }
-              if(rP=='|') //B01111100 motor driver off         
-                {
-                  target_receive = (rH<<8)+rL; 
-                  omega_target = double (target_receive*0.00031434064);  //convert received 16 bit integer to actual speed
-                  driver_mode = 0;
-                  if (driver_mode ==1)  driver_status = 1;
-                  else                  driver_status = 0;
-                }  
+                } 
             }
   }         
 }
@@ -149,18 +139,15 @@ void sendFeedback_wheel_angularVel()
   char sT='{'; //send start byte
   byte sH = highByte(actual_send); //send high byte
   byte sL = lowByte(actual_send);  //send low byte
-  byte sCS = current_send;  //send current value
-  if (driver_status == 1)  sP = '}'; //send stop byte motor on
-  if (driver_status == 0)  sP = '|'; //send stop byte motor off
-  Serial.write(sT); Serial.write(sH); Serial.write(sL); 
-  Serial.write(sCS);//prepared for sending current drawing to mega 
+  sP = '}'; //send stop byte 
+  Serial.write(sT); Serial.write(sH); Serial.write(sL);  
   Serial.write(sP);
 }
 
 void getMotorData()  
 {                               
   static long EncoderposPre = 0;       
-  omega_actual = -(((Encoderpos - EncoderposPre)*(1000/dT))*2*PI/(CPR*gear_ratio));  //ticks/s to rad/s
+  omega_actual = ((Encoderpos - EncoderposPre)*(1000/dT))*2*PI/(CPR*gear_ratio);  //ticks/s to rad/s
   EncoderposPre = Encoderpos;                 
 }
 
@@ -168,7 +155,6 @@ void CurrentMonitor()
 {
     // 5V / 1024 ADC counts / 144 mV per A = 34 mA per count
     current = analogRead(analogPin) * 34;  
-    if (current > CurrentLimit)  digitalWrite(EN, LOW);
 }
 
 double updatePid(double targetValue,double currentValue)   
