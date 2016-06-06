@@ -47,13 +47,16 @@
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/odom_received.png)
 
 ## Environment Setup (add in your notebook or desktop)
-* echo "ROS_MASTER_URI=http://"MASTER_IP":11311" >>  ~/.bashrc
+
+    $ echo "ROS_MASTER_URI=http://"MASTER_IP":11311" >>  ~/.bashrc
 
 ## View in Rviz (save banana.rviz in ~/catkin_ws/src)
-* $ rosrun rviz rviz -d ~/catkin_ws/src/banana.rviz
+
+    $ rosrun rviz rviz -d ~/catkin_ws/src/banana.rviz
 ![](https://github.com/piliwilliam0306/andbot_base/blob/master/rviz.png)
 
 ## Simple Teleop operation
+    
     $ sudo apt-get install ros-indigo-turtlebot-teleop
 
 ## modify turbotbot_teleop cmd_vel topic name
